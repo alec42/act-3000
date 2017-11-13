@@ -1,10 +1,12 @@
-# act-3000
+# Act-3000
 Codes R pour les dépannages
 
-# Auteur
+# Auteurs
 
 Christopher Blier-Wong
+
 Ihsan Chaoubi
+
 Etienne Marceau
 
 École d'actuariat, Université Laval 
