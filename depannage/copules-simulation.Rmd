@@ -191,7 +191,7 @@ plot(vU, xlab = expression(U[1]), ylab = expression(U[2]))
 
 ### Fonction de répartition
 ```{r}
-C <- function(u1, u2, alph) -1 / alph * log(1 + (exp(-alph * u1) - 1) * (exp(-alph * u1) - 1) / (exp(-alph) - 1))
+C <- function(u1, u2, alph) -1 / alph * log(1 + (exp(-alph * u1) - 1) * (exp(-alph * u2) - 1) / (exp(-alph) - 1))
 ```
 ***
 ## Copule de Gumbel
