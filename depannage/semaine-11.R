@@ -15,7 +15,7 @@
 
 library(pracma)
 
-# 10.5.1
+# 10.5.1 ------------------------------------------------------------------
 
 sapply(c(10**-3, 10**-6), function(kap) ((2 * kap ** -5 - 1) ** -(1 / 5)) / kap)
 curve(((2 * x ** -5 - 1) ** -(1 / 5)) / x)
@@ -72,7 +72,7 @@ covx1x2 / sqrt(VX ** 2)
 # (c) iv
 
 nsim <- 1000000
-
+set.seed(2017)
 vV <- matrix(runif(nsim * 3), nsim, 3, byrow = T)
 vTheta <- qgamma(vV[, 1], 1 / alpha, 1)
 vY <- sapply(1:2, function(t) qexp(vV[, t + 1], vTheta))
@@ -95,9 +95,8 @@ X1X2.prime <- qgamma(vU.prime, 1 / 4, 1 / 4)
 S <- rowSums(X1X2)
 S.prime <- rowSums(X1X2.prime)
 
-plot(ecdf(S)[])
+plot(ecdf(S))
 plot(ecdf(S.prime), add = TRUE)
-
 
 # (c) viii
 
@@ -125,7 +124,45 @@ TrouverAlpha <- function(rho){
   optimize(function(x) abs(rhox1x2(x) - rho), c(0, 10))$minimum
 }
 
-alpha1 <- TrouverAlpha(0.5)
+(alpha <- TrouverAlpha(0.5))
+
+# (c) iv
+
+nsim <- 1000000
+set.seed(2017)
+vV <- matrix(runif(nsim * 3), nsim, 3, byrow = T)
+vTheta <- qgamma(vV[, 1], 1 / alpha, 1)
+vY <- sapply(1:2, function(t) qexp(vV[, t + 1], vTheta))
+vU <- (1 + vY) ** (-1 / alpha)
+
+(mean(vU[, 1] * vU[, 2]) - prod(colMeans(vU))) / sqrt( var(vU[, 1]) * var(vU[, 2]) )
+
+# (c) v
+
+vU.prime <- 1 - vU
+(mean(vU.prime[, 1] * vU.prime[, 2]) - prod(colMeans(vU.prime))) / sqrt( var(vU.prime[, 1]) * var(vU.prime[, 2]) )
+
+# (c) vi
+
+X1X2 <- qgamma(vU, 1 / 4, 1 / 4)
+X1X2.prime <- qgamma(vU.prime, 1 / 4, 1 / 4)
+
+# (c) vii
+
+S <- rowSums(X1X2)
+S.prime <- rowSums(X1X2.prime)
+
+# plot(ecdf(S))
+# plot(ecdf(S.prime), add = TRUE)
+
+# (c) viii
+
+(VaRS <- sapply(c(0.9, 0.99, 0.999, 0.9999), function(t) sort(S)[t * nsim]))
+(VaRS.prime <- sapply(c(0.9, 0.99, 0.999, 0.9999), function(t) sort(S.prime)[t * nsim]))
+
+(TVaRS <- sapply(VaRS, function(t) mean(S[S > t])))
+(TVaRS <- sapply(VaRS.prime, function(t) mean(S.prime[S.prime > t])))
+
 
 rhox1x2 <- function(alpha){
   C.clayton <- function(u, v) (u ** (-alpha) + v ** (-alpha) - 1) ** (-1 / alpha)
@@ -141,7 +178,101 @@ TrouverAlpha <- function(rho){
   optimize(function(x) abs(rhox1x2(x) - rho), c(0, 10))$minimum
 }
 
-alpha2 <- TrouverAlpha(0.5)
+(alpha <- TrouverAlpha(0.5))
+
+# (c) iv
+
+nsim <- 1000000
+set.seed(2017)
+vV <- matrix(runif(nsim * 3), nsim, 3, byrow = T)
+vTheta <- qgamma(vV[, 1], 1 / alpha, 1)
+vY <- sapply(1:2, function(t) qexp(vV[, t + 1], vTheta))
+vU <- (1 + vY) ** (-1 / alpha)
+
+(mean(vU[, 1] * vU[, 2]) - prod(colMeans(vU))) / sqrt( var(vU[, 1]) * var(vU[, 2]) )
+
+# (c) v
+
+vU.prime <- 1 - vU
+(mean(vU.prime[, 1] * vU.prime[, 2]) - prod(colMeans(vU.prime))) / sqrt( var(vU.prime[, 1]) * var(vU.prime[, 2]) )
+
+# (c) vi
+
+X1X2 <- qgamma(vU, 1 / 4, 1 / 4)
+X1X2.prime <- qgamma(vU.prime, 1 / 4, 1 / 4)
+
+# (c) vii
+
+S <- rowSums(X1X2)
+S.prime <- rowSums(X1X2.prime)
+
+# plot(ecdf(S))
+# plot(ecdf(S.prime), add = TRUE)
+
+# (c) viii
+
+(VaRS <- sapply(c(0.9, 0.99, 0.999, 0.9999), function(t) sort(S)[t * nsim]))
+(VaRS.prime <- sapply(c(0.9, 0.99, 0.999, 0.9999), function(t) sort(S.prime)[t * nsim]))
+
+(TVaRS <- sapply(VaRS, function(t) mean(S[S > t])))
+(TVaRS <- sapply(VaRS.prime, function(t) mean(S.prime[S.prime > t])))
+
+
+
+# 10.5.2 ------------------------------------------------------------------
+
+# cas Clayton
+
+F1 <- function(x) 1 - exp(-x)
+F2 <- function(x) 1 - (1.5 / (1.5 + x)) ** 2.5
+F3 <- function(x) 1 - (0.5 / (0.5 + x)) ** 1.5
+
+q1 <- function(u) - log(1 - u)
+q2 <- function(u) 1.5 * ((1 - u) ** (- 1 / 2.5) - 1)
+q3 <- function(u) 0.5 * ((1 - u) ** (- 1 / 1.5) - 1)
+
+F1(q1(0.5)) # check
+F2(q2(0.5))
+F3(q3(0.5))
+
+m <- 1000000
+Questions <- function(Fi, qi, j){
+  n <- 10 ** j
+  Ex <- integrate(function(t) 1 - Fi(t), 0, 1000)$value
+  print(paste("L'espérance est", Ex))
+  set.seed(2017)
+  vV <- matrix(runif((n + 1) * m), nrow = m, n + 1, byrow = TRUE)
+  vTheta <- qgamma(vV[, 1], 1 / alpha, 1)
+  vY <- sapply(1:n, function(t) qexp(vV[, t + 1], vTheta))
+  vU <- (1 + vY) ** (-1 / alpha)
+  
+  vX <- qi(vU)
+  vX.prime <- qi(1-vU)
+  vW <- rowSums(vX)
+  vW.prime <- rowSums(vX.prime)
+  
+  print(paste("La moyenne empirique de W est", mean(vW)))
+  print(paste("La moyenne empirique de W' est", mean(vW.prime)))
+  
+  tryCatch({ # La variance n'existe pas pour F3
+    print(paste("L'écart type empirique de W est", var(vW)))
+    print(paste("L'écart type empirique de W' est", var(vW.prime)))
+  }, error = function(e) print("La variance n'existe pas."))
+  kappas <- 1 - 10 ** (-2 *(1:3))
+  
+  print(paste0("P(Wn >F^-1(", kappas, ") = ", sapply(kappas, function(t) mean(vW > qi(t)))))
+  print(paste0("P(Wn' >F^-1(", kappas, ") = ", sapply(kappas, function(t) mean(vW.prime > qi(t)))))
+  
+  print(paste0("VaR_", kappas, "(Wn) = ", sapply(kappas, function(t) vW[m * t])))
+  print(paste0("VaR_", kappas, "(Wn') = ", sapply(kappas, function(t) vW.prime[m * t])))
+  
+  print(paste0("VaR_", kappas, "(Wn) = ", sapply(kappas, function(t) mean(vW[vW > vW[m * t]]))))
+  print(paste0("VaR_", kappas, "(Wn') = ", sapply(kappas, function(t) mean(vW.prime[vW.prime > vW.prime[m * t]]))))
+}
+
+Questions(F1, q1, 1)
+
+
 
 
 
