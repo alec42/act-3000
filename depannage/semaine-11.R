@@ -19,8 +19,8 @@ library(pracma)
 
 sapply(c(10**-3, 10**-6), function(kap) ((2 * kap ** -5 - 1) ** -(1 / 5)) / kap)
 curve(((2 * x ** -5 - 1) ** -(1 / 5)) / x)
-sapply(c(10 ** -3, 10 ** -6), function(kap) (2 * kap - 1 + (2 * (1 - kap) ** -5 - 1) ** -(1 / 5)) / kap)
-
+  sapply(c(10 ** -3, 10 ** -6), function(kap) (1 - 2 * kap  + (2 * (kap) ** -5 - 1) ** -(1 / 5)) / (1 - kap))
+curve((1 - 2 * x  + (2 * (x) ** -5 - 1) ** -(1 / 5)) / (1 - x))
 sapply(c(1 - 10 ** -3, 1 - 10 ** -6), function(kap) (2 * kap - 1 + ((2 * (1 - kap) ** -5 - 1) ** -(1 / 5))) / kap)
 # Dépendance très positive aux extrèmes.
 
@@ -42,6 +42,7 @@ covu1u2 <- Eu1u2 - 0.5 ** 2
 covu1u2 / sqrt(1 / 12 * 1 / 12)
 
 # U_1', U_2'
+
 
 Fu1u2 <- function(u, v) C.clayton.bar(u, v)
 Fu1u2.bar <- function(u, v) 1 - u - v + Fu1u2(u, v)
@@ -96,8 +97,8 @@ S <- rowSums(X1X2)
 S.prime <- rowSums(X1X2.prime)
 
 
-plot(ecdf(S))
-plot(ecdf(S.prime), add = TRUE)
+# plot(ecdf(S))
+# plot(ecdf(S.prime), add = TRUE)
 
 
 plot(ecdf(S[S < 20]))
@@ -143,7 +144,6 @@ vU <- (1 + vY) ** (-1 / alpha)
 # (c) vi
 
 X1X2 <- qgamma(vU, 1 / 4, 1 / 4)
-
 
 # (c) vii
 
@@ -191,9 +191,6 @@ S.prime <- rowSums(X1X2.prime)
 # plot(ecdf(S.prime), add = TRUE)
 
 # (c) viii
-
-(mean(vU[, 1] * vU[, 2]) - prod(colMeans(vU))) / sqrt( var(vU[, 1]) * var(vU[, 2]) )
-(mean(vU.prime[, 1] * vU.prime[, 2]) - prod(colMeans(vU.prime))) / sqrt( var(vU.prime[, 1]) * var(vU.prime[, 2]) )
 
 mean(S)
 mean(S.prime)
@@ -255,8 +252,8 @@ Questions <- function(Fi, qi, j){
   print(paste0("VaR_", kappas, "(Wn) = ", sapply(kappas, function(t) vW[m * t])))
   print(paste0("VaR_", kappas, "(Wn') = ", sapply(kappas, function(t) vW.prime[m * t])))
   
-  print(paste0("VaR_", kappas, "(Wn) = ", sapply(kappas, function(t) mean(vW[vW > vW[m * t]]))))
-  print(paste0("VaR_", kappas, "(Wn') = ", sapply(kappas, function(t) mean(vW.prime[vW.prime > vW.prime[m * t]]))))
+  print(paste0("TVaR_", kappas, "(Wn) = ", sapply(kappas, function(t) mean(vW[vW > vW[m * t]]))))
+  print(paste0("TVaR_", kappas, "(Wn') = ", sapply(kappas, function(t) mean(vW.prime[vW.prime > vW.prime[m * t]]))))
 }
 
 Questions(F1, q1, 1)
@@ -265,3 +262,23 @@ Questions(F3, q3, 1)
 
 Questions(F3, q3, 6)
 7450.6 / 1024
+
+
+
+# 10.2.1 ------------------------------------------------------------------
+alpha <- 5
+C.frank <- function(u1, u2) -1 / alpha * log(1 + (exp(-alpha * u1) - 1) * (exp(-alpha * u2) - 1) / (exp(-alpha) - 1))
+C.frank(pexp(100, 1 / 100), plnorm(100, log(100) - 0.32, 0.8))
+C.frank(pexp(200, 1 / 100), plnorm(100, log(100) - 0.32, 0.8))
+C.frank(pexp(100, 1 / 100), plnorm(300, log(100) - 0.32, 0.8))
+
+x1 <- 100
+x2 <- 100
+1 - (1 - pexp(x1/100)) - C.frank(pexp(x1, 1/100), 1 - plnorm(x2, log(100) - 0.32, 0.8))
+
+1 - (1 - pexp(x1, 1 / 100)) - (1 - plnorm(x2, log(100) - 0.32, 0.8)) +
+  C.frank((1 - pexp(x1, 1 / 100)), (1 - plnorm(x2, log(100) - 0.32, 0.8)) )
+
+
+
+

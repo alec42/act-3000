@@ -74,8 +74,8 @@ X1X2.prime <- qlnorm(vU.prime, - 0.5 * log(5), sqrt(log(5)))
 S <- rowSums(X1X2)
 S.prime <- rowSums(X1X2.prime)
 
-plot(ecdf(S))
-plot(ecdf(S.prime), add = TRUE)
+# plot(ecdf(S))
+# plot(ecdf(S.prime), add = TRUE)
 
 # (c) viii
 
