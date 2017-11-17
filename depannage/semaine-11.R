@@ -95,8 +95,13 @@ X1X2.prime <- qgamma(vU.prime, 1 / 4, 1 / 4)
 S <- rowSums(X1X2)
 S.prime <- rowSums(X1X2.prime)
 
+
 plot(ecdf(S))
 plot(ecdf(S.prime), add = TRUE)
+
+
+plot(ecdf(S[S < 20]))
+plot(ecdf(S.prime[S.prime < 20]), add = TRUE)
 
 # (c) viii
 
@@ -135,34 +140,14 @@ vTheta <- qgamma(vV[, 1], 1 / alpha, 1)
 vY <- sapply(1:2, function(t) qexp(vV[, t + 1], vTheta))
 vU <- (1 + vY) ** (-1 / alpha)
 
-(mean(vU[, 1] * vU[, 2]) - prod(colMeans(vU))) / sqrt( var(vU[, 1]) * var(vU[, 2]) )
-
-# (c) v
-
-vU.prime <- 1 - vU
-(mean(vU.prime[, 1] * vU.prime[, 2]) - prod(colMeans(vU.prime))) / sqrt( var(vU.prime[, 1]) * var(vU.prime[, 2]) )
-
 # (c) vi
 
 X1X2 <- qgamma(vU, 1 / 4, 1 / 4)
-X1X2.prime <- qgamma(vU.prime, 1 / 4, 1 / 4)
+
 
 # (c) vii
 
 S <- rowSums(X1X2)
-S.prime <- rowSums(X1X2.prime)
-
-# plot(ecdf(S))
-# plot(ecdf(S.prime), add = TRUE)
-
-# (c) viii
-
-(VaRS <- sapply(c(0.9, 0.99, 0.999, 0.9999), function(t) sort(S)[t * nsim]))
-(VaRS.prime <- sapply(c(0.9, 0.99, 0.999, 0.9999), function(t) sort(S.prime)[t * nsim]))
-
-(TVaRS <- sapply(VaRS, function(t) mean(S[S > t])))
-(TVaRS <- sapply(VaRS.prime, function(t) mean(S.prime[S.prime > t])))
-
 
 rhox1x2 <- function(alpha){
   C.clayton <- function(u, v) (u ** (-alpha) + v ** (-alpha) - 1) ** (-1 / alpha)
@@ -187,29 +172,33 @@ set.seed(2017)
 vV <- matrix(runif(nsim * 3), nsim, 3, byrow = T)
 vTheta <- qgamma(vV[, 1], 1 / alpha, 1)
 vY <- sapply(1:2, function(t) qexp(vV[, t + 1], vTheta))
-vU <- (1 + vY) ** (-1 / alpha)
-
-(mean(vU[, 1] * vU[, 2]) - prod(colMeans(vU))) / sqrt( var(vU[, 1]) * var(vU[, 2]) )
+vU2 <- (1 + vY) ** (-1 / alpha)
 
 # (c) v
 
-vU.prime <- 1 - vU
-(mean(vU.prime[, 1] * vU.prime[, 2]) - prod(colMeans(vU.prime))) / sqrt( var(vU.prime[, 1]) * var(vU.prime[, 2]) )
+vU.prime <- 1 - vU2
+
 
 # (c) vi
 
-X1X2 <- qgamma(vU, 1 / 4, 1 / 4)
 X1X2.prime <- qgamma(vU.prime, 1 / 4, 1 / 4)
 
 # (c) vii
 
-S <- rowSums(X1X2)
 S.prime <- rowSums(X1X2.prime)
 
 # plot(ecdf(S))
 # plot(ecdf(S.prime), add = TRUE)
 
 # (c) viii
+
+(mean(vU[, 1] * vU[, 2]) - prod(colMeans(vU))) / sqrt( var(vU[, 1]) * var(vU[, 2]) )
+(mean(vU.prime[, 1] * vU.prime[, 2]) - prod(colMeans(vU.prime))) / sqrt( var(vU.prime[, 1]) * var(vU.prime[, 2]) )
+
+mean(S)
+mean(S.prime)
+var(S)
+var(S.prime)
 
 (VaRS <- sapply(c(0.9, 0.99, 0.999, 0.9999), function(t) sort(S)[t * nsim]))
 (VaRS.prime <- sapply(c(0.9, 0.99, 0.999, 0.9999), function(t) sort(S.prime)[t * nsim]))
@@ -271,11 +260,8 @@ Questions <- function(Fi, qi, j){
 }
 
 Questions(F1, q1, 1)
+Questions(F2, q2, 1)
+Questions(F3, q3, 1)
 
-
-
-
-
-
-
-
+Questions(F3, q3, 6)
+7450.6 / 1024
