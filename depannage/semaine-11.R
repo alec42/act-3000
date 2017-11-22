@@ -234,8 +234,8 @@ Questions <- function(Fi, qi, j){
   
   vX <- qi(vU)
   vX.prime <- qi(1-vU)
-  vW <- rowSums(vX)
-  vW.prime <- rowSums(vX.prime)
+  vW <- rowMeans(vX)
+  vW.prime <- rowMeans(vX.prime)
   
   print(paste("La moyenne empirique de W est", mean(vW)))
   print(paste("La moyenne empirique de W' est", mean(vW.prime)))
