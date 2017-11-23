@@ -1,0 +1,81 @@
+---
+title: "Méthode des rectangles"
+author: "Christopher Blier-Wong"
+date: "November 23, 2017"
+output: pdf_document
+header-includes: \renewcommand{\contentsname}{Table des matières} \renewcommand{\abstractname}{Résumé}
+abstract: "Ce document présente la méthode des rectangles. Il est basé sur un document préparé par Jérémie Boudreault pour le dépannage en ACT-3000 lors de la session A16."
+---
+
+# Méthode des rectangles 
+
+Soit $S = X_1 + X_2$. On s'intéresse à la fonction de répartition de $S$. 
+
+On a 
+
+\[
+\begin{aligned}
+Pr(S \leq s) &= Pr(X_1 + X_2 \leq s)\\
+             &= Pr(X_2 \leq s - X_1).
+\end{aligned}
+\]
+
+On trace le graphique de $X_2 \leq s - X_1$ et on veut calculer l'aire sous le graphique.
+
+```{r, echo = FALSE}
+plot(0:10, 0:10, type = "n", xaxs = "i", yaxs = "i", 
+     xlab = expression(X[1]), ylab = expression(X[2]))
+axis(1, 5, expression(italic(s)))
+axis(2, 5, expression(italic(s)))
+segments(0, 5, 5, 0, col = "lightblue")
+polygon(c(0, 0, 5), c(5, 0, 0), col = "red")
+```
+
+On obtient un triangle. Par contre, on a seulement la fonction de répartition bivariée, qui forme un rectangle dans le graphique. La méthode des rectangles peut approximer le triangle par plusieurs rectangles, comme suit: 
+
+```{r, echo = FALSE}
+DessinRectangle <- function(m){
+  par(mfrow = c(1, 2))
+  
+  s <- 5
+  pas <- s / 2 ** m
+  x.lower <- seq(0, s - pas, by = pas)
+  x.upper <- seq(0, s, by = pas)
+  
+  plot(0:10, 0:10, main = "Méthode Lower", type = "n", xaxs = "i", yaxs = "i", 
+       xlab = expression(X[1]), ylab = expression(X[2]))
+  axis(1, s, expression(italic(s)))
+  axis(2, s, expression(italic(s)))
+  
+  for(i in x.lower){
+    polygon(c(i, i, i + pas, i + pas), c(0, s - i - pas, s - i - pas, 0), col = "red")
+  }
+  
+  segments(0, s, s, 0, col = "blue")
+  
+  plot(0:10, 0:10, main = "Méthode Upper", type = "n", xaxs = "i", yaxs = "i", 
+       xlab = expression(X[1]), ylab = expression(X[2]))
+  axis(1, 5, expression(italic(s)))
+  axis(2, 5, expression(italic(s)))
+  
+  for(i in x.upper){
+    polygon(c(i, i, i + pas, i + pas), c(0, s - i  ,s - i, 0), col = "red")
+  }
+  segments(0, s, s, 0, col = "blue")
+  
+  par(mfrow=c(1, 1))
+}
+
+DessinRectangle(1)
+DessinRectangle(2)
+DessinRectangle(6)
+```
+
+
+
+
+
+
+
+
+
