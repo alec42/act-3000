@@ -1,0 +1,11 @@
+---
+title: "Méthode des rectangles"
+author: "Christopher Blier-Wong"
+date: "November 23, 2017"
+output: pdf_document
+---
+
+# Méthode des rectangles 
+
+Soit $S = X_1 + X_2$. On s'intéresse à la fonction de répartition de $S$. 
+
