@@ -121,3 +121,18 @@ Fy1y2(15, 11) - Fy1y2(5, 11) - Fy1y2(15, 6) + Fy1y2(5, 6)
 # (ii)
 
 (1 - Fy1(50) - Fy2(30) + Fy1y2(50, 30)) / (1 - Fy2(30))
+
+# (iii)
+
+s <- 60
+m <- 15
+
+pas <- s / (2 ** m)
+
+# Methode lower
+ylower <- seq(pas, s - pas, by = pas)
+sum(sapply(ylower, function(t) Fy1y2(t, s - t) - Fy1y2(t - pas, s - t)))
+
+# Methode upper
+yupper <- seq(pas, s, by = pas)
+sum(sapply(yupper, function(t) Fy1y2(t, s - t + pas) - Fy1y2(t - pas, s - t  + pas)))
