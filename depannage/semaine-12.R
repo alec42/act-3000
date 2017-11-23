@@ -31,7 +31,7 @@ DessinRectangle <- function(m){
   
   segments(0, s, s, 0, col = "blue")
   
-  plot(0:10, 0:10, main = "Méthode Upper", type = "n", xaxs = "i", yaxs = "i", 
+  plot(0:10, 0:10, main = paste("Méthode Upper m =", m), type = "n", xaxs = "i", yaxs = "i", 
        xlab = expression(X[1]), ylab = expression(X[2]))
   axis(1, 5, expression(italic(s)))
   axis(2, 5, expression(italic(s)))
