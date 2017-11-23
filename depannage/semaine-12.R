@@ -86,5 +86,19 @@ CalcuerRepartition(6, 60)
 CalcuerRepartition(10, 60)
 
 
+# Estimation avec la copule EFGM ------------------------------------------
+
+set.seed(20171123)
+nsim <- 2000
+alpha <- - 0.5
+vV <- matrix(runif(nsim * 2), nsim, 2, byrow = T)
+W1 <- alpha * (2 * vV[ ,1] - 1) - 1
+W2 <- (1 - alpha * (2 * vV[ ,1] - 1)) ** 2 + 4 * alpha * vV[ ,2] * (2 * vV[ ,1] - 1)
+vU <- cbind(vV[ ,1], 2 * vV[ ,2] / (sqrt(W2) - W1))
+plot(vU, xlab = expression(U[1]), ylab = expression(U[2])) 
+
+
+
+
 
 
