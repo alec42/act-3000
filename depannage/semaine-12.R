@@ -5,6 +5,7 @@
 # Plan du depannage -------------------------------------------------------
 
 # Méthode des rectangles
+# Calcul du rho de Spearman empirique
 
 
 # Méthode des rectangles --------------------------------------------------
@@ -84,4 +85,70 @@ CalcuerRepartition(4, 60)
 CalcuerRepartition(5, 60)
 CalcuerRepartition(6, 60)
 CalcuerRepartition(10, 60)
+
+
+# Rho de Spearman ---------------------------------------------------------
+
+# Marginales log-normale et differentes copules
+
+nsim <- 1000
+alphabeta <- c(.3, .3, 1-.3-.3)
+vSup <- matrix(runif(nsim), nsim, 2)
+vInf <- matrix(runif(nsim), nsim, 2)
+vInf[,2]<-1 - vInf[,1]
+vInd <- matrix(runif(2 * nsim), nsim, 2, byrow = T)
+fb <- sample(c(1, 2, 3), 1000, replace = TRUE, prob = alphabeta)
+vV <- matrix(numeric(), nsim, 2)
+
+for(i in 1:nsim) {
+  if (fb[i] == 1) {
+    vV[i, ] <- vInf[i, ]
+  } else if (fb[i] == 2) {
+    vV[i, ] <- vSup[i,]
+  } else {
+    vV[i, ] <- vInd[i, ]
+  }
+}
+
+vX <- cbind(qlnorm(vV[, 1], log(10), 0.2), qlnorm(vV[, 2], log(20), 0.3))
+
+(mean(rank(vX[, 1]) * rank(vX[, 2])) - mean(rank(vX[, 1]) * mean(rank(vX[, 2])))) / 
+  sqrt(var(rank(vX[, 1])) * var(rank(vX[, 2])))
+
+cor(vX, method = "spearman")[2]
+
+diff(alphabeta)[1]
+
+# Copule EFGM
+
+nsim <- 10000
+alpha <- 0.5
+vV <- matrix(runif(nsim * 2), nsim, 2, byrow = T)
+W1 <- alpha * (2 * vV[ ,1] - 1) - 1
+W2 <- (1 - alpha * (2 * vV[ ,1] - 1)) ** 2 + 4 * alpha * vV[ ,2] * (2 * vV[ ,1] - 1)
+vU <- cbind(vV[ ,1], 2 * vV[ ,2] / (sqrt(W2) - W1))
+
+vX <- cbind(qlnorm(vU[, 1], log(10), 0.9), qlnorm(vU[, 2], log(200), 0.3))
+
+(mean(rank(vX[, 1]) * rank(vX[, 2])) - mean(rank(vX[, 1]) * mean(rank(vX[, 2])))) / 
+  sqrt(var(rank(vX[, 1])) * var(rank(vX[, 2])))
+
+cor(vX, method = "spearman")[2]
+
+alpha / 3
+
+# Copule de Clayton
+
+alph <- 10
+vV <- matrix(runif(nsim * 3), nsim, 3, byrow = T)
+vTheta <- qgamma(vV[, 1], 1 / alph, 1)
+vY <- sapply(1:2, function(t) qexp(vV[, t + 1], vTheta))
+vU <- (1 + vY) ** (-1 / alph)
+
+vX <- cbind(qlnorm(vU[, 1], log(1), 0.1), qlnorm(vU[, 2], log(2000), 0.9))
+
+(mean(rank(vX[, 1]) * rank(vX[, 2])) - mean(rank(vX[, 1]) * mean(rank(vX[, 2])))) / 
+  sqrt(var(rank(vX[, 1])) * var(rank(vX[, 2])))
+
+cor(vX, method = "spearman")[2]
 
