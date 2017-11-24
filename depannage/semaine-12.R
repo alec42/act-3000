@@ -152,3 +152,29 @@ vX <- cbind(qlnorm(vU[, 1], log(1), 0.1), qlnorm(vU[, 2], log(2000), 0.9))
 
 cor(vX, method = "spearman")[2]
 
+# Estimation avec la copule EFGM ------------------------------------------
+
+set.seed(20171123)
+nsim <- 2000
+alpha <- - 0.5
+vV <- matrix(runif(nsim * 2), nsim, 2, byrow = T)
+W1 <- alpha * (2 * vV[ ,1] - 1) - 1
+W2 <- (1 - alpha * (2 * vV[ ,1] - 1)) ** 2 + 4 * alpha * vV[ ,2] * (2 * vV[ ,1] - 1)
+vU <- cbind(vV[ ,1], 2 * vV[ ,2] / (sqrt(W2) - W1))
+plot(vU, xlab = expression(U[1]), ylab = expression(U[2])) 
+
+# Estimation du paramètre de la copule
+
+# Méthode des moments: 
+
+# Rho de Spearman
+# On sait que rho = alpha / 3
+# Alors alpha = 3 * rho de Spearman
+
+3 * cor(vU, method = "spearman")[2]
+
+# Tau de Kendall
+# On sait que tau = 2 * alpha / 9
+# Alors alpha = 9 * tau / 2
+
+9 * cor(vU, method = "kendall")[2] / 2
