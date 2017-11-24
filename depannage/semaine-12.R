@@ -5,7 +5,7 @@
 # Plan du depannage -------------------------------------------------------
 
 # Méthode des rectangles
-# Estimation 
+
 
 # Méthode des rectangles --------------------------------------------------
 
@@ -52,7 +52,7 @@ DessinRectangle(10)
 
 # Retour sur la question 10.1.1 # 4 
 
-DensiteCopule <- function(u1, u2) {
+RepartitionCopule <- function(u1, u2) {
   u1 + u2 - 1 + ((1 - u1) ** (- 2) + (1 - u2) ** (- 2) - 1) ** (- 1 / 2)
 }
 
@@ -65,7 +65,7 @@ Fy2 <- function(y2) {
 }
 
 Fy1y2 <- function(y1, y2) {
-  DensiteCopule(Fy1(y1), Fy2(y2))
+  RepartitionCopule(Fy1(y1), Fy2(y2))
 }
 
 CalcuerRepartition <- function(m, s){
@@ -84,21 +84,4 @@ CalcuerRepartition(4, 60)
 CalcuerRepartition(5, 60)
 CalcuerRepartition(6, 60)
 CalcuerRepartition(10, 60)
-
-
-# Estimation avec la copule EFGM ------------------------------------------
-
-set.seed(20171123)
-nsim <- 2000
-alpha <- - 0.5
-vV <- matrix(runif(nsim * 2), nsim, 2, byrow = T)
-W1 <- alpha * (2 * vV[ ,1] - 1) - 1
-W2 <- (1 - alpha * (2 * vV[ ,1] - 1)) ** 2 + 4 * alpha * vV[ ,2] * (2 * vV[ ,1] - 1)
-vU <- cbind(vV[ ,1], 2 * vV[ ,2] / (sqrt(W2) - W1))
-plot(vU, xlab = expression(U[1]), ylab = expression(U[2])) 
-
-
-
-
-
 
