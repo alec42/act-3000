@@ -1,0 +1,44 @@
+---
+title: "10.4.e) Marceau (2013)"
+author: "Christopher Blier-Wong"
+date: "November 25, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Le solutionnaire a un erreur: on fait la partie e) seulement. Pour la méthode lower, mettre lower <- TRUE, pour la méthode upper, mettre lower <- FALSE. 
+
+```{r}
+alpha <- 5
+x.max <- 500
+lower <- TRUE
+
+if(lower) {
+  Fx1 <- pexp(0:x.max, 1 / 20)
+  Fx2 <- pgamma(0:x.max, 2, 1 / 5)
+} else {
+  Fx1 <- pexp(1:(x.max + 1), 1 / 20)
+  Fx2 <- pgamma(1:(x.max + 1), 2, 1 / 5)
+}
+
+C.gumbel <- function(u1, u2) exp(-((-log(u1) ** alpha) + (-log(u2)) ** alpha) ** (1 / alpha))
+
+Fx1x2 <- outer(Fx1, Fx2, C.gumbel)
+fx1x2 <- matrix(numeric(), x.max, x.max)
+
+fx1x2[, 1] <- sapply(1:x.max, function(t) Fx1x2[t + 1, 1] - Fx1x2[t, 1])
+fx1x2[1, ] <- sapply(1:x.max, function(t) Fx1x2[1, t + 1] - Fx1x2[1, t])
+                     
+fx1x2[2:x.max, 2:x.max] <- Fx1x2[2:x.max, 2:x.max] - Fx1x2[1:(x.max - 1), 2:x.max] - 
+  Fx1x2[2:x.max, 1:(x.max - 1)] + Fx1x2[1:(x.max - 1), 1:(x.max - 1)]
+
+g <- sapply(0:(x.max - 1), function(t) sapply(0:(x.max - 1), function(j) 
+  min(t, 100) +  min(max(t / 100 - 0.1 , 0)  , 0.6) * j))
+
+sum(fx1x2 * t(g))
+
+```
+
