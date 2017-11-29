@@ -4,7 +4,16 @@
 
 # Plan du depannage -------------------------------------------------------
 
-# Estimation
+# Suite des copules
+# Estimation couples
+# Allocation du capital 
+
+# Suite des copules -------------------------------------------------------
+
+
+
+
+
 
 # Estimation avec la copule EFGM ------------------------------------------
 
@@ -83,3 +92,61 @@ NegLogVraisemblance <- function(alpha){
 }
 
 optimize(NegLogVraisemblance, c(-1, 1))$minimum
+
+# Allocation du capital  --------------------------------------------------
+
+# 11.4.1
+
+# b)
+
+aa <- 2 ** 5
+
+fb <- c(0, 1, rep(0, 30))
+phi1 <- fft(fb)
+phin <- (0.9 + 0.1 * phi1) * phi1 * (0.06 + 0.02 * (0.8 + 0.2 * phi1) ** 2)
+E1 <- Re(fft(phin, inverse = TRUE)) / aa
+round(E1[1:5], 5)
+
+fb <- c(0, 1, rep(0, 30))
+phi1 <- fft(fb)
+phin <- (0.8 + 0.2 * phi1) * phi1 * (0.08 + 0.04 * (0.9 + 0.1 * phi1) ** 2)
+E2 <- Re(fft(phin, inverse = TRUE)) / aa
+round(E2[1:5], 5)
+
+(round(E1[1:5], 5) + round(E2[1:5], 5)) / (0:4)
+
+
+# 11.4.2
+
+fb <- c(0.8, 0.16, 0.04)
+fb <- c(fb, rep(0, aa - length(fb)))
+
+phib <- fft(fb)
+phin <- phib ** 12
+fn <- Re(fft(phin, inverse = TRUE)) / aa
+sum(fb)
+fn[6]
+
+fb <- c(0, 1, rep(0, 30))
+phi1 <- fft(fb)
+phin <- (0.8 + 0.16 * phi1 + 0.04 * phi1 ** 2) ** 12
+fn <- Re(fft(phin, inverse = TRUE)) / aa
+sum(fb)
+fn[6]
+
+# b)
+
+fb <- c(0, 1, rep(0, 30))
+phi1 <- fft(fb)
+phin <- phi1 * 12 * (0.1 + 0.04 * phi1) * (0.8 + 0.16 * phi1 + 0.04 * phi1 ** 2) ** 11
+E1 <- Re(fft(phin, inverse = TRUE)) / aa
+E1[6]
+
+fb <- c(0, 1, rep(0, 30))
+phi1 <- fft(fb)
+phin <- phi1 * 12 * (0.06 + 0.04 * phi1) * (0.8 + 0.16 * phi1 + 0.04 * phi1 ** 2) ** 11
+E2 <- Re(fft(phin, inverse = TRUE)) / aa
+E2[6]
+
+E1[2] + E2[2]
+fn[2]
