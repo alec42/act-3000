@@ -1,0 +1,110 @@
+---
+title: "10_2Q2"
+author: "David Beauchemin"
+date: "30 novembre 2017"
+output: pdf_document
+---
+
+# 10.2Q.2
+
+## a)
+### i)
+
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(U_1) \leq x_1, F_{X_2}^{-1}(U_2) \leq x_2\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), U_2 \leq F_{X_2}(x_2)\big) \\
+&= C_\alpha^{Clayton}\big( F_{X_1}(x_1),  F_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+## ii)
+
+```{r}
+alpha <- 5
+densityCopule <- function(u1, u2) {
+     (u1 ^ (-alpha) + u2 ^ (-alpha) - 1) ^ (-1 / alpha)
+}
+FXX <- function(x1, x2) {
+     densityCopule(pexp(x1, 1 / 100), plnorm(x2, log(100) - 0.32, 0.8))
+}
+FXX(100, 100)
+FXX(200, 100)
+FXX(100, 300)
+```
+
+
+## b)
+
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(U_1) \leq x_1, F_{X_2}^{-1}(1 - U_2) \leq x_2\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), 1 - U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), U_2 > 1 - F_{X_2}(x_2)\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), U_2 > \overline{F}_{X_2}(x_2)\big) \\
+&= 1 - \overline{F}_{X_2}(x_2) - C_\alpha^{Clayton}\big( F_{X_1}(x_1),  \overline{F}_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+## ii)
+```{r}
+FXX <- function(x1, x2) {
+     1 - pexp(x1, 1 / 100, lower.tail = FALSE) - densityCopule(pexp(x1, 1 / 100), 1 -
+     plnorm(x2, log(100) - 0.32, 0.8))
+}
+FXX(100, 100)
+FXX(200, 100)
+FXX(100, 300)
+```
+
+## c)
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(1 - U_1) \leq x_1, F_{X_2}^{-1}(U_2) \leq x_2\big) \\
+&= P\big(1 - U_1 \leq F_{X_1}(x_1), U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > 1 - F_{X_1}(x_1), U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > \overline{F}_{X_1}(x_1), U_2 \leq  F_{X_2}(x_2)\big) \\
+&= 1 - \overline{F}_{X_1}(x_1) - C_\alpha^{Clayton}\big( \overline{F}_{X_1}(x_1), F_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+## ii)
+```{r}
+FXX <- function(x1, x2) {
+     1 - (1 - plnorm(x2, log(100) - 0.32, 0.8)) - densityCopule(pexp(x1, 1 /
+     100, lower.tail = FALSE),
+     plnorm(x2, log(100) - 0.32, 0.8))
+}
+FXX(100, 100)
+FXX(200, 100)
+FXX(100, 300)
+```
+
+
+## d)
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(1 - U_1) \leq x_1, F_{X_2}^{-1}(U_2) \leq x_2\big) \\
+&= P\big(1 - U_1 \leq F_{X_1}(x_1), 1 - U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > 1 - F_{X_1}(x_1), U_2 > 1 - F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > \overline{F}_{X_1}(x_1), U_2 > \overline{F}_{X_2}(x_2)\big) \\
+&= 1 - \overline{F}_{X_1}(x_1) \overline{F}_{X_2}(x_2) + C_\alpha^{Clayton}\big( \overline{F}_{X_1}(x_1), \overline{F}_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+## ii)
+```{r}
+FXX <- function(x1, x2) {
+     1 - (1 - plnorm(x2, log(100) - 0.32, 0.8)) - pexp(x1, 1 / 100, lower.tail = FALSE) +
+     densityCopule(pexp(x1, 1 /
+     100, lower.tail = FALSE),
+     plnorm(x2, log(100) - 0.32, 0.8))
+}
+FXX(100, 100)
+FXX(200, 100)
+FXX(100, 300)
+```
