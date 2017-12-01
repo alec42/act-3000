@@ -10,10 +10,63 @@
 
 # Suite des copules -------------------------------------------------------
 
+# 10.5.5
 
+# (d)
 
+nsim <- 1000000
+set.seed(2018)
 
+theta <- floor(runif(nsim) * 4) + 1
+# theta <- sample(1:4, nsim, replace = TRUE)
+alpha <- 5
+vV <- matrix(runif(nsim * 3), nsim, 3, byrow = T)
+vTheta <- qgamma(vV[, 1], 1 / alpha, 1)
+vY <- sapply(1:2, function(t) qexp(vV[, t + 1], vTheta))
+U <- (1 + vY) ** (-1 / alpha)
 
+W <- matrix(numeric(), nsim, 2)
+for (i in 1:nsim) {
+   if (theta[i] == 1) {
+     W[i, ] <- c(U[i, 1], U[i, 2])
+   } else if (theta[i] == 2) {
+     W[i, ] <- c(U[i, 1], 1 - U[i, 2])
+   } else if  (theta[i] == 3) {
+     W[i, ] <- c(U[i, 1], 1 - U[i, 2])
+   } else {
+     W[i, ] <- c(1 - U[i, 2], 1 - U[i, 2])
+   }
+}
+
+# (i)
+
+vT <- rowSums(W)
+
+plot.ecdf(vT[1:100000])
+
+toutes_les_questions_sauf_i <- function(quantile_function) {
+  X <- quantile_function(W)
+  S <- rowSums(X)
+  plot.ecdf(S[1:10000])
+  S.ind <- quantile_function(runif(nsim)) + quantile_function(runif(nsim))
+  plot.ecdf(S.ind[1:10000])
+  print(paste0("VaR_", kappas, "(S) = ", sort(S)[nsim * kappas]))
+  print(paste0("TVaR_", kappas, "(S) = ", sapply(kappas, function(t) mean(sort(S)[(t * nsim):nsim]))))
+}
+
+q1 <- function(x) qnorm(x, 0, 1)
+q2 <- function(x) qlnorm(x, -1/2, 1)
+q3 <- function(x) qexp(x, 1)
+q4 <- function(x) 1.5 * ((1 - x) ** (- 1 / 2.5) - 1)
+
+kappas <- c(1/1000, 1/100, 99/100, 999/1000)
+
+par(mfrow = c(1, 2))
+toutes_les_questions_sauf_i(q1)
+toutes_les_questions_sauf_i(q2)
+toutes_les_questions_sauf_i(q3)
+toutes_les_questions_sauf_i(q4)
+par(mfrow = c(1, 1))
 
 # Estimation avec la copule EFGM ------------------------------------------
 
