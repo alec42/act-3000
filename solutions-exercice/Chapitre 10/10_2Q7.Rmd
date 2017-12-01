@@ -1,0 +1,121 @@
+---
+title: "10_2Q7"
+author: "David Beauchemin"
+date: "30 novembre 2017"
+output: pdf_document
+---
+
+# 10_2Q7
+
+```{r}
+# Pareto
+ppareto <- function(x, lambda, alpha, lower.tail = TRUE){
+     if(lower.tail){
+          1 - (lambda / (lambda + x))^alpha
+     } else {
+          (lambda / (lambda + x))^alpha
+     }
+}
+```
+
+## A)
+```{r, echo = FALSE}
+eval <- ppareto(1000, lambda = 150, alpha = 2.5, lower.tail = FALSE)
+```
+
+
+$$
+\begin{aligned}
+\overline{F}_{X}(X) &= `r eval`
+\end{aligned}
+$$
+
+```{r}
+ppareto(1000, lambda = 150, alpha = 2.5, lower.tail = FALSE)
+```
+
+
+Il s'agit du même développement pour B, C, D, E et F. Seulement la structure de la copule change.
+
+$$
+\begin{aligned}
+\overline{F}_{M_n}(X) &= P\big(M_n > x \big) \\
+&= P\big(\text{max}(X_1,...,X_n) > x \big) \\
+&= 1 - P\big(X_1 \leq x,...,X_n \leq x \big) \\
+&= 1 - P\big(F_{X_1}^{-1}(U_1) \leq x,...,F_{X_n}^{-1}( U_n) \leq x \big) \\
+&= 1 - P\big(U_1 \leq F_{X_1}(x),..., 1 - U_n \leq F_{X_n}(x) \big) \\
+&= 1 - P\big(U_1 \leq F_{X_1}(x),..., U_n \leq F_{X_n}(x) \big) \\
+&= 1 - C_\alpha\big(F_{X_1}(x),..., F_{X_n}(x) \big) \\
+\end{aligned}
+$$
+
+## B)
+
+```{r}
+#Gumbel
+densityCopule <- function(u, alpha) {
+     exp(-(sum((-log(u)) ^ alpha))^(1 / alpha))
+}
+FXX.n <- function(x, n) {
+densityCopule(sapply(1:n, function(n) ppareto(x, lambda = 150, alpha = 2.5)), 5)
+}
+1 - FXX.n(1000, 10)
+1 - FXX.n(1000, 100)
+1 - FXX.n(1000, 1000)
+```
+
+## C)
+```{r}
+## Clayton
+densityCopule <- function(u, alpha) {
+     ( sum(u^-alpha) - (length(u) - 1) )^(-1 / alpha)
+}
+FXX.n <- function(x, n) {
+densityCopule(sapply(1:n, function(n) ppareto(x, lambda = 150, alpha = 2.5)), 5)
+}
+1 - FXX.n(1000, 10)
+1 - FXX.n(1000, 100)
+1 - FXX.n(1000, 1000)
+```
+
+## D)
+```{r}
+## Frank
+densityCopule <- function(u, alpha) {
+     -1 / alpha * log(1 + (prod(exp(-alpha * u) - 1) / (exp(-alpha) - 1)^(length(u) - 1) ))
+}
+FXX.n <- function(x, n) {
+densityCopule(sapply(1:n, function(n) ppareto(x, lambda = 150, alpha = 2.5)), 5)
+}
+1 - FXX.n(1000, 10)
+1 - FXX.n(1000, 100)
+1 - FXX.n(1000, 1000)
+```
+
+## E)
+```{r}
+## Borne supérieur de Fréchet
+densityCopule <- function(u){
+     min(u)
+}
+FXX.n <- function(x, n) {
+densityCopule(sapply(1:n, function(n) ppareto(x, lambda = 150, alpha = 2.5)))
+}
+1 - FXX.n(1000, 10)
+1 - FXX.n(1000, 100)
+1 - FXX.n(1000, 1000)
+```
+
+## F)
+```{r}
+## Indépendante
+densityCopule <- function(u){
+     prod(u)
+}
+FXX.n <- function(x, n) {
+densityCopule(sapply(1:n, function(n) ppareto(x, lambda = 150, alpha = 2.5)))
+}
+1 - FXX.n(1000, 10)
+1 - FXX.n(1000, 100)
+1 - FXX.n(1000, 1000)
+```

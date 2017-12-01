@@ -1,0 +1,98 @@
+---
+title: "10_2Q8"
+author: "David Beauchemin"
+date: "30 novembre 2017"
+output: pdf_document
+---
+
+# 10_2Q8
+
+## A)
+$$
+\begin{aligned}
+F_{Y_1}(Y_1) &= F_{Y_1,Y_2}(x_1, \infty) \\
+&= 1 - \Bigg( \bigg(\frac{\lambda_1}{\lambda_1 + x_1} \bigg)^{\alpha_1 \times\theta} + \bigg(\frac{\lambda_2}{\lambda_2 + \infty} \bigg)^{\alpha_2 \times\theta} - \bigg(\frac{\lambda_1}{\lambda_1 + x_1} \bigg)^{\alpha_1 \times\theta} \times \bigg(\frac{\lambda_2}{\lambda_2 + \infty} \bigg)^{\alpha_2 \times\theta}\Bigg)^{\frac{1}{\theta}} \\
+&=1 - \Bigg( \bigg(\frac{\lambda_1}{\lambda_1 + x_1} \bigg)^{\alpha_1 \times\theta} + 0 - \bigg(\frac{\lambda_1}{\lambda_1 + x_1} \bigg)^{\alpha_1 \times\theta} \times 0\Bigg)^{\frac{1}{\theta}} \\
+&=1 - \Bigg( \bigg(\frac{\lambda_1}{\lambda_1 + x_1} \bigg)^{\alpha_1 \times\theta} \Bigg)^{\frac{1}{\theta}} \\
+&=1 - \bigg(\frac{\lambda_1}{\lambda_1 + x_1} \bigg)^{\alpha_1 } \\
+Y_1&\sim \text{Pareto}(\lambda_1, \alpha_1)
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+F_{Y_2}(Y_2) &= F_{Y_1,Y_2}(\infty, x_2) \\
+&= 1 - \Bigg( \bigg(\frac{\lambda_1}{\lambda_1 + \infty} \bigg)^{\alpha_1 \times\theta} + \bigg(\frac{\lambda_2}{\lambda_2 + x_2} \bigg)^{\alpha_2 \times\theta} - \bigg(\frac{\lambda_1}{\lambda_1 + \infty} \bigg)^{\alpha_1 \times\theta} \times \bigg(\frac{\lambda_2}{\lambda_2 + x_2} \bigg)^{\alpha_2 \times\theta}\Bigg)^{\frac{1}{\theta}}  \\
+&= ...\text{Même raisonnement}\\
+Y_2 &\sim \text{Pareto}(\lambda_2, \alpha_2)
+\end{aligned}
+$$
+
+## B)
+Par la méthode de construction inverse de copule, soit
+$$
+\begin{aligned}
+C(u_1, u_2) =& \  F_{Y_1,Y_2}(F_{Y_1}^{-1}(U_1), F_{Y_2}^{-1}(U_2)) \\
+=& \ F_{Y_1,Y_2}\Big(\lambda_1\big((1 - U_1)^{-\frac{1}{\alpha_1}} - 1\big),\lambda_2\big((1 - U_2)^{-\frac{1}{\alpha_2}} - 1\big)\Big) \\ 
+=& \  1 - \Bigg( \bigg(\frac{\lambda_1}{\lambda_1 +\lambda_1\big((1 - U_1)^{-\frac{1}{\alpha_1}} - 1\big)} \bigg)^{\alpha_1 \times\theta} + \\ 
+&\bigg(\frac{\lambda_2}{\lambda_2 + \lambda_2\big((1 - U_2)^{-\frac{1}{\alpha_2}} - 1\big)} \bigg)^{\alpha_2 \times\theta} - \\ 
+&\bigg(\frac{\lambda_1}{\lambda_1 +\lambda_1\big((1 - U_1)^{-\frac{1}{\alpha_1}} - 1\big)} \bigg)^{\alpha_1 \times\theta} \times \bigg(\frac{\lambda_2}{\lambda_2 + \lambda_2\big((1 - U_2)^{-\frac{1}{\alpha_2}} - 1\big)} \bigg)^{\alpha_2 \times\theta}\Bigg)^{\frac{1}{\theta}} \\
+\end{aligned}
+$$
+$$
+\begin{aligned}
+=& \  1 - \Bigg( \bigg(\frac{1}{1 + \big((1 - U_1)^{-\frac{1}{\alpha_1}} - 1\big)} \bigg)^{\alpha_1 \times\theta} + \\ 
+&\bigg(\frac{1}{1 + \big((1 - U_2)^{-\frac{1}{\alpha_2}} - 1\big)} \bigg)^{\alpha_2 \times\theta} - \\ 
+&\bigg(\frac{1}{1 +\big((1 - U_1)^{-\frac{1}{\alpha_1}} - 1\big)} \bigg)^{\alpha_1 \times\theta} \times \bigg(\frac{1}{1 + \big((1 - U_2)^{-\frac{1}{\alpha_2}} - 1\big)} \bigg)^{\alpha_2 \times\theta}\Bigg)^{\frac{1}{\theta}} \\
+=& \ 1 - \Bigg( \bigg(\frac{1}{(1 - U_1)^{-\frac{1}{\alpha_1}}} \bigg)^{\alpha_1 \times\theta} + \bigg(\frac{1}{(1 - U_2)^{-\frac{1}{\alpha_2}}} \bigg)^{\alpha_2 \times\theta} - \bigg(\frac{1}{(1 - U_1)^{-\frac{1}{\alpha_1}}} \bigg)^{\alpha_1 \times\theta} \times \bigg(\frac{1}{(1 - U_2)^{-\frac{1}{\alpha_2}}} \bigg)^{\alpha_2 \times\theta}\Bigg)^{\frac{1}{\theta}} \\
+=& \ 1 - \Bigg( \bigg((1 - U_1)^{\frac{1}{\alpha_1}} \bigg)^{\alpha_1 \times\theta} + \bigg((1 - U_2)^{\frac{1}{\alpha_2}} \bigg)^{\alpha_2 \times\theta} - \bigg((1 - U_1)^{\frac{1}{\alpha_1}} \bigg)^{\alpha_1 \times\theta} \times \bigg((1 - U_2)^{\frac{1}{\alpha_2}} \bigg)^{\alpha_2 \times\theta}\Bigg)^{\frac{1}{\theta}} \\
+=& \ 1 - \Bigg( (1 - U_1)^{\theta} + (1 - U_2)^{\theta} - (1 - U_1)^{\theta} \times (1 - U_2)^{\theta}\Bigg)^{\frac{1}{\theta}} \\
+\end{aligned}
+$$
+
+## C)
+On sait que
+$$
+\begin{aligned}
+C_{2|1}(U_2 |U_1) &= \frac{\partial}{\partial U_1} C(U_1, U_2) \\
+=& \frac{\partial}{\partial U_1} \Bigg( \ 1 - \Bigg( (1 - u_1)^{\theta} + (1 - u_2)^{\theta} - (1 - u_1)^{\theta} \times (1 - u_2)^{\theta}\Bigg)^{\frac{1}{\theta}} \Bigg)\\
+&= \frac{\theta(1 - u_1)^{\theta - 1} - (1 - u_1)^{\theta - 1}(1 - u_2)^\theta }{\big((1 - u_1)^\theta + (1 - u_2)^\theta - (1 - u_1)^\theta(1 - u_2)^\theta \big)^{1 -\frac{1}{\theta}}}
+\end{aligned}
+$$
+
+## D)
+
+### i)
+$$
+1 - F_{X_1}(x_1) - C_\alpha(\overline{F}_{X_1}(x_1), \overline{F}_{X_2}(x_2))
+$$
+
+```{r}
+densityCopule <- function(u1, u2, theta){
+     1 - ((1 - u1)^theta + (1 - u2)^theta - (1 - u1)^theta * (1 - u2)^theta)^(1/theta)
+}
+1 - plnorm(200, log(100) - 0.32, 0.8) - 
+     densityCopule(1 - plnorm(200, log(100) - 0.32, 0.8), 
+                                                      pexp(100, 1/200, lower.tail = FALSE), 
+                                                      2)
+```
+
+### ii)
+```{r}
+conditionalDensityCopule <- function(u1, u2, theta){
+     ( theta * (1 - u1)^(theta - 1) - (1 - u1)^(theta - 1) * (1 - u2)^theta ) / 
+          ( (1 - u1)^theta + (1 - u2)^theta - 
+                 (1 - u1)^theta * (1 - u2)^theta )^(1 - 1 / theta)
+}
+U1 <- 0.76
+
+#fonction à optim
+f.optim <- function(U2) abs(conditionalDensityCopule(U1, U2, 2) - 0.83)
+U2 <- optimize(f.optim, interval = c(0,1))$minimum
+U1;U2
+
+qnorm(U1, log(100) - 0.32, 0.8); qexp(U1, 1 / 200)
+```
+
+
+

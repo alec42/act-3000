@@ -1,0 +1,121 @@
+---
+title: "10_2Q6"
+author: "David Beauchemin"
+date: "30 novembre 2017"
+output: pdf_document
+---
+
+# 10_2Q6
+
+```{r}
+#Vecteur des Yi
+Yi <- matrix(c(-0.45, 0.76, 2.67, 1.31,3.93,-2.18), nrow = 3 , ncol = 2, byrow = TRUE)
+
+# Pareto
+qpareto <- function(kappa, lambda, alpha){
+     lambda * ((1 - kappa)^(-1 / alpha) - 1)
+}
+```
+
+## A)
+### i)
+
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(U_1) \leq x_1, F_{X_2}^{-1}(U_2) \leq x_2\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), U_2 \leq F_{X_2}(x_2)\big) \\
+&= C_\alpha^N\big( F_{X_1}(x_1),  F_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+### ii)
+```{r}
+#Simulation des U 
+U_i <- sapply(1:2, function(t) pnorm(Yi[ ,t], 0, 1))
+#valeurs de X_1 et X_2
+matrix(c(qexp(U_i[ ,1], 1 / 100), qpareto(U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
+```
+
+## B)
+
+### i)
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(U_1) \leq x_1, F_{X_2}^{-1}(1 - U_2) \leq x_2\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), 1 - U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), U_2 > 1 - F_{X_2}(x_2)\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), U_2 > \overline{F}_{X_2}(x_2)\big) \\
+&= 1 - \overline{F}_{X_2}(x_2) - C_\alpha^N\big( F_{X_1}(x_1),  \overline{F}_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+### ii)
+
+```{r}
+#Simulation des U 
+U_i <- sapply(1:2, function(t) pnorm(Yi[ ,t], 0, 1))
+#valeurs de X_1 et X_2
+matrix(c(qexp(U_i[ ,1], 1 / 100), qpareto(1 - U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
+```
+
+
+## C)
+
+### i)
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(1 - U_1) \leq x_1, F_{X_2}^{-1}(U_2) \leq x_2\big) \\
+&= P\big(1 - U_1 \leq F_{X_1}(x_1), U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > 1 - F_{X_1}(x_1), U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > \overline{F}_{X_1}(x_1), U_2 \leq F_{X_2}(x_2)\big) \\
+&= 1 - \overline{F}_{X_1}(x_1) - C_\alpha^N\big( F_{X_1}(x_1),  F_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+### ii)
+
+```{r}
+#Simulation des U 
+U_i <- sapply(1:2, function(t) pnorm(Yi[ ,t], 0, 1))
+#valeurs de X_1 et X_2
+matrix(c(qexp(1 - U_i[ ,1], 1 / 100), qpareto(U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
+```
+
+## D)
+
+### i)
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(1 - U_1) \leq x_1, F_{X_2}^{-1}(1 - U_2) \leq x_2\big) \\
+&= P\big(1 - U_1 \leq F_{X_1}(x_1), 1 - U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > 1 - F_{X_1}(x_1), U_2 > 1 - F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > \overline{F}_{X_1}(x_1), U_2 > \overline{F}_{X_2}(x_2)\big) \\
+&= 1 - \overline{F}_{X_1}(x_1) - \overline{F}_{X_2}(x_2) + C_\alpha^N\big( \overline{F}_{X_1}(x_1),  \overline{F}_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+### ii)
+
+```{r}
+#Simulation des U 
+U_i <- sapply(1:2, function(t) pnorm(Yi[ ,t], 0, 1))
+#valeurs de X_1 et X_2
+matrix(c(qexp(1 - U_i[ ,1], 1 / 100), qpareto(1 - U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
+```
+
+\newpage
+#### ANNEXE #####
+```{r}
+# code du document de simulation des copules
+nsim <- 1000
+alph<-.6
+vV<-MASS::mvrnorm(nsim, c(0, 0), matrix(c(1, alph, alph, 1), 2))
+vU<-sapply(1:2, function(t) pnorm(vV[ ,t], 0, 1))
+plot(vU, xlab = expression(U[1]), ylab = expression(U[2]))
+```
+
+
