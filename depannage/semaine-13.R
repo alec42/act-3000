@@ -12,8 +12,6 @@
 
 # 10.5.3
 
-# 10.5.3
-
 # (d)
 
 alpha <- 1 / 2
@@ -22,7 +20,7 @@ Fs <- function(x) alpha * pexp(x / 2, 1) + (1 - alpha) * ifelse((x > log(4)), sq
   (1 - alpha - 1 + alpha) * pgamma(x, 2)
 
 VaR <- function(kap) {
-  return(optimize(function(s) abs(Fs(s) - kap), c(0, 100))$minimum)
+  optimize(function(s) abs(Fs(s) - kap), c(0, 100))$minimum
 }
 VaR(0.01)
 VaR(0.99)
@@ -39,7 +37,7 @@ sapply(c(0.01, 0.99), function(t) integrate(g, lower = t, upper = 1)$value / (1 
 
 # (e)
 
-integrale_que_je_nai_pas_le_gout_de_faire <- integrate(function(x) x * log(1 - exp(- x)) * exp(- x), 0, 100)$value
+integrale_que_je_nai_pas_le_gout_de_faire <- - integrate(function(x) x * log(1 - exp(- x)) * exp(- x), 0, 100)$value
 
 alpha <- (1 + integrale_que_je_nai_pas_le_gout_de_faire) / (2 + integrale_que_je_nai_pas_le_gout_de_faire)
 
@@ -72,7 +70,7 @@ mu <- log(10) - sig / 2
 integrale_que_je_nai_pas_le_gout_de_faire_2 <- integrate(function(x) x * exp(mu + sig * qnorm(1 - plnorm(x, mu, sig))) * dlnorm(x, mu, sig), 0, 100)$value
 alpha <- (exp(2 * mu + sig ** 2) - integrale_que_je_nai_pas_le_gout_de_faire_2) / (exp(2 * mu + 2 * sig ** 2) - integrale_que_je_nai_pas_le_gout_de_faire_2)
 
-Fs <- function(s) alpha * plnorm(s, mu, sig) + (1 - alpha) * 
+Fs <- function(s) alpha * plnorm(s / 2, mu, sig) + (1 - alpha) * 
   ifelse((s > 2 * exp(mu)), pnorm(1 / sig * log( (s + sqrt(s ** 2 - 4 * exp(2 * mu))) / (2 * exp(mu)))) - pnorm(1 / sig * log( (s - sqrt(s ** 2 - 4 * exp(2 * mu))) / (2 * exp(mu)))), 0)
 
 curve(Fs, 0, 100)
@@ -96,9 +94,9 @@ sapply(c(0.01, 0.99), function(t) integrate(g, lower = t, upper = 1)$value / (1 
 # (d)
 
 nsim <- 1000000
-set.seed(2018)
+set.seed(2017)
 
-theta <- floor(runif(nsim) * 4) + 1
+theta <- floor(runif(nsim, 1, 5))
 # theta <- sample(1:4, nsim, replace = TRUE)
 alpha <- 5
 vV <- matrix(runif(nsim * 3), nsim, 3, byrow = T)
@@ -205,8 +203,8 @@ optim(c(2, .5, 0), NegLogVraisemblance)$par
 
 # Methode 2: IFM Joe
 
-lam.ml <- optimize(function(t) - sum(log(dexp(vX[, 1], t))), c(0, 10))$minimum
-(lam.ml <- c(lam.ml, optimize(function(t) - sum(log(dexp(vX[, 2], t))), c(0, 10))$minimum))
+lam.ml <- optimize(function(t) - sum(log(dexp(vX[, 1], t))), c(0, 2))$minimum
+(lam.ml <- c(lam.ml, optimize(function(t) - sum(log(dexp(vX[, 2], t))), c(0, 2))$minimum))
 
 vU.2 <- sapply(1:2, function(t) pexp(vX[, t], lam.ml[t]))
 vU.2 <- pexp(vX, lam.ml) # R est assez intelligent pour faire ca.
@@ -219,7 +217,7 @@ optimize(NegLogVraisemblance, c(-1, 1))$minimum
 
 # Methode 3: Semi-parametrique
 
-vU.3 <- cbind(rank(vX[, 1]) / (nrow(vX) + 1), rank(vX[, 2]) / (nrow(vX) + 1))
+vU.3 <- cbind(rank(vX[, 1]) / (nsim + 1), rank(vX[, 2]) / (nsim + 1))
 
 NegLogVraisemblance <- function(alpha){
   - sum(sapply(1:nrow(vU.3), function(t) log(Densite.EFGM(vU.3[t, 1], vU.3[t, 2], alpha))))
