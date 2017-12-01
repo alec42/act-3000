@@ -17,7 +17,22 @@ qpareto <- function(kappa, lambda, alpha){
 }
 ```
 
+Il faut d'abord créé des valeurs d'un couple de loi normale bivariées $(Z_1, Z_2)$, soit
+$$
+\begin{aligned}
+Y_1 &= Z_1 & Y_2 &=  \alpha Z_1 + \sqrt{1 - \alpha^2} * Z_2
+\end{aligned}
+$$
+On rappel que dans notre cas $\alpha$ correspond au coefficiet de corrélation de Person. (Voir page 327 du document de référence)
+
+```{r}
+alpha <- 0.6
+Zi <- matrix(c(Yi[,1], alpha * Yi[,1] + sqrt(1 - alpha^2) *  Yi[,2]), nrow = 3)
+Zi
+```
+
 ## A)
+
 ### i)
 
 $$
@@ -32,7 +47,7 @@ $$
 ### ii)
 ```{r}
 #Simulation des U 
-U_i <- sapply(1:2, function(t) pnorm(Yi[ ,t], 0, 1))
+U_i <- pnorm(Zi, 0, 1)
 #valeurs de X_1 et X_2
 matrix(c(qexp(U_i[ ,1], 1 / 100), qpareto(U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
 ```
@@ -55,7 +70,7 @@ $$
 
 ```{r}
 #Simulation des U 
-U_i <- sapply(1:2, function(t) pnorm(Yi[ ,t], 0, 1))
+U_i <- pnorm(Zi, 0, 1)
 #valeurs de X_1 et X_2
 matrix(c(qexp(U_i[ ,1], 1 / 100), qpareto(1 - U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
 ```
@@ -79,7 +94,7 @@ $$
 
 ```{r}
 #Simulation des U 
-U_i <- sapply(1:2, function(t) pnorm(Yi[ ,t], 0, 1))
+U_i <- pnorm(Zi, 0, 1)
 #valeurs de X_1 et X_2
 matrix(c(qexp(1 - U_i[ ,1], 1 / 100), qpareto(U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
 ```
@@ -102,20 +117,9 @@ $$
 
 ```{r}
 #Simulation des U 
-U_i <- sapply(1:2, function(t) pnorm(Yi[ ,t], 0, 1))
+U_i <- pnorm(Zi, 0, 1)
 #valeurs de X_1 et X_2
 matrix(c(qexp(1 - U_i[ ,1], 1 / 100), qpareto(1 - U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
-```
-
-\newpage
-#### ANNEXE #####
-```{r}
-# code du document de simulation des copules
-nsim <- 1000
-alph<-.6
-vV<-MASS::mvrnorm(nsim, c(0, 0), matrix(c(1, alph, alph, 1), 2))
-vU<-sapply(1:2, function(t) pnorm(vV[ ,t], 0, 1))
-plot(vU, xlab = expression(U[1]), ylab = expression(U[2]))
 ```
 
 

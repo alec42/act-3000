@@ -1,0 +1,57 @@
+---
+title: "10_2Q9"
+author: "David Beauchemin"
+date: "30 novembre 2017"
+output: pdf_document
+---
+
+# 10_2Q9
+
+```{r}
+#Vecteur des Yi
+Yi <- matrix(c(1.41, -0.32, 1.07, 0.98, -0.75, 1.87), nrow = 3 , ncol = 2, byrow = TRUE)
+
+# Pareto
+qpareto <- function(kappa, lambda, alpha){
+     lambda * ((1 - kappa)^(-1 / alpha) - 1)
+}
+```
+
+## A)
+Il faut d'abord créé des valeurs d'un couple de loi normale bivariées $(Z_1, Z_2)$, soit
+$$
+\begin{aligned}
+Y_1 &= Z_1 & Y_2 &=  \alpha Z_1 + \sqrt{1 - \alpha^2} * Z_2
+\end{aligned}
+$$
+On rappel que dans notre cas $\alpha$ correspond au coefficiet de corrélation de Person. (Voir page 327 du document de référence)
+
+```{r}
+alpha <- 0.7
+Zi <- matrix(c(Yi[,1], alpha * Yi[,1] + sqrt(1 - alpha^2) *  Yi[,2]), nrow = 3)
+Zi
+```
+
+```{r}
+U <- matrix(pnorm(Zi), nrow = 3, ncol = 2)
+U
+```
+
+## B)
+
+```{r}
+X <- matrix(c(qpareto(U[ ,1], 900, 1.9), qexp(U[ ,2], 1 / 1000)), nrow = 3, ncol = 2)
+X
+```
+
+## C)
+
+```{r}
+S <- rowSums(X)
+S
+```
+
+## D)
+```{r}
+mean(X[,1] * (S > 2000))
+```
