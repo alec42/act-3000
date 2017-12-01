@@ -7,7 +7,6 @@
 # Méthode des rectangles
 # Calcul du rho de Spearman empirique
 
-
 # Méthode des rectangles --------------------------------------------------
 
 # On compare premièrement les graphiques

@@ -10,6 +10,87 @@
 
 # Suite des copules -------------------------------------------------------
 
+# 10.5.3
+
+# 10.5.3
+
+# (d)
+
+alpha <- 1 / 2
+
+Fs <- function(x) alpha * pexp(x / 2, 1) + (1 - alpha) * ifelse((x > log(4)), sqrt(1 - 4 * exp(-x)), 0) + 
+  (1 - alpha - 1 + alpha) * pgamma(x, 2)
+
+VaR <- function(kap) {
+  return(optimize(function(s) abs(Fs(s) - kap), c(0, 100))$minimum)
+}
+VaR(0.01)
+VaR(0.99)
+
+g <- function(n) {
+  o <- vector("numeric", length(n))
+  for(i in seq(along = n))
+    o[i] <- optimize(VaR, c(0, 80))$minimum
+  n * o
+}
+
+# pas une question pour R, integration pourrie 
+sapply(c(0.01, 0.99), function(t) integrate(g, lower = t, upper = 1)$value / (1 - t)) 
+
+# (e)
+
+integrale_que_je_nai_pas_le_gout_de_faire <- integrate(function(x) x * log(1 - exp(- x)) * exp(- x), 0, 100)$value
+
+alpha <- (1 + integrale_que_je_nai_pas_le_gout_de_faire) / (2 + integrale_que_je_nai_pas_le_gout_de_faire)
+
+Fs <- function(x) alpha * pexp(x / 2, 1) + (1 - alpha) * ifelse((x > (log(4))), sqrt(1 - 4 * exp(-x)), 0) 
+
+par(mfrow=c(1, 2))
+curve(Fs, 0, 40)
+curve(pgamma(x, 2, 1), 0, 40)
+par(mfrow=c(1, 1))
+
+VaR <- function(kap) optimize(function(s) abs(Fs(s) - kap), c(0, 100))$minimum
+VaR(0.01)
+VaR(0.99)
+
+g <- function(n) {
+  o <- vector("numeric", length(n))
+  for(i in seq(along = n))
+    o[i] <- optimize(VaR, c(0, 100))$minimum
+  n * o
+}
+
+# pas une question pour R, integration pourrie
+sapply(c(0.01, 0.99), function(t) integrate(g, lower = t, upper = 1)$value / (1 - t)) 
+
+# (f)
+
+sig <- 1
+mu <- log(10) - sig / 2
+
+integrale_que_je_nai_pas_le_gout_de_faire_2 <- integrate(function(x) x * exp(mu + sig * qnorm(1 - plnorm(x, mu, sig))) * dlnorm(x, mu, sig), 0, 100)$value
+alpha <- (exp(2 * mu + sig ** 2) - integrale_que_je_nai_pas_le_gout_de_faire_2) / (exp(2 * mu + 2 * sig ** 2) - integrale_que_je_nai_pas_le_gout_de_faire_2)
+
+Fs <- function(s) alpha * plnorm(s, mu, sig) + (1 - alpha) * 
+  ifelse((s > 2 * exp(mu)), pnorm(1 / sig * log( (s + sqrt(s ** 2 - 4 * exp(2 * mu))) / (2 * exp(mu)))) - pnorm(1 / sig * log( (s - sqrt(s ** 2 - 4 * exp(2 * mu))) / (2 * exp(mu)))), 0)
+
+curve(Fs, 0, 100)
+
+VaR <- function(kap) optimize(function(s) abs(Fs(s) - kap), c(0, 100))$minimum
+VaR(0.01)
+VaR(0.99)
+
+g <- function(n) {
+  o <- vector("numeric", length(n))
+  for(i in seq(along = n))
+    o[i] <- optimize(VaR, c(0, 90))$minimum
+  n * o
+}
+
+# pas une question pour R, integration pourrie
+sapply(c(0.01, 0.99), function(t) integrate(g, lower = t, upper = 1)$value / (1 - t)) 
+
 # 10.5.5
 
 # (d)
