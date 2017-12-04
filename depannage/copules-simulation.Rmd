@@ -1,5 +1,6 @@
 ---
 title: "Simulation et fonction de répartition des copules"
+author: Christopher Blier-Wong
 output:
   pdf_document: default
   html_notebook: default
