@@ -1,0 +1,90 @@
+---
+title: "10_3Q3"
+author: "David Beauchemin"
+date: "3 décembre 2017"
+output: pdf_document
+---
+
+# 10_3Q3
+
+## A)
+On sait que la valeur minimale de $\rho_P$ est *atteinte* lorsque les variables sont antimonotones.
+
+$$
+\begin{aligned}
+E[X_1X_2] &= E \big[ e^{\mu_1 + \sigma_1 \times Z} e^{\mu_2 + \sigma_2 \times (1 - Z)}\big] \\
+&= E \big[ e^{\mu_1 + \sigma_1 \times Z + \mu_2 + \sigma_2 \times (1 - Z)}\big] \\
+&= E \big[ e^{\mu_S + \sigma_S \times Z} \big] \\
+\end{aligned}
+$$
+Où $S \sim LN(\mu_S = \mu_1 + \mu_2, \sigma_S = (\sigma_1 - \sigma_2)$, (antimonotones) alors l'espérance d'une LogNormale correspond à
+$$
+\begin{aligned}
+E[X_1X_2] &=  e^{\mu_1 + \mu_2 + \frac{1}{2} (\sigma_1 - \sigma_2)^2} \\
+\end{aligned}
+$$
+Ce qui nous permet de trouver $\rho$.
+
+## B)
+On applique le même raisonement, mais il s'agit de variables monotones.
+
+$$
+\begin{aligned}
+E[X_1X_2] &= E \big[ e^{\mu_1 + \sigma_1 \times Z} e^{\mu_2 + \sigma_2 \times Z}\big] \\
+&= E \big[ e^{\mu_1 + \sigma_1 \times Z + \mu_2 + \sigma_2 \times Z}\big] \\
+&= E \big[ e^{\mu_S + \sigma_S \times Z} \big] \\
+\end{aligned}
+$$
+
+Où $S \sim LN(\mu_S = \mu_1 + \mu_2, \sigma_S = (\sigma_1 + \sigma_2)$, (monotones) alors l'espérance d'une LogNormale correspond à
+$$
+\begin{aligned}
+E[X_1X_2] &=  e^{\mu_1 + \mu_2 + \frac{1}{2} (\sigma_1 + \sigma_2)^2} \\
+\end{aligned}
+$$
+
+## C)
+### i)
+$$
+\begin{aligned}
+X_1^{(a)} &= e^{\Phi ^{-1}(0.02) \times \sigma_1 + \mu_1}\\
+&= e^{-\Phi ^{-1}(0.98) \times \sigma_1 + \mu_1}\\
+&= e^{-2.0537 \times 1 + 1.9} \\
+&= `r exp(-2.0537 * 1 +1.9)`
+X_2^{(a)} &= e^{\Phi ^{-1}(1 - 0.02) \times \sigma_2 + \mu_2}\\
+&= e^{\Phi ^{-1}(0.98) \times \sigma_2 + \mu_2}\\
+&= e^{2.0537 \times 0.9 + 2} \\
+&= `r exp(2.0537 * 0.9 +2)`
+\end{aligned}
+$$
+On applique le même raisonnement pour les autres réalisations. 
+
+#### Validation
+```{r}
+qlnorm(0.02, 1.9, 1)
+qlnorm(0.98, 2, 0.9)
+```
+
+#### Réalisations
+```{r}
+U <- c(0.02, 0.15, 0.28, 0.3, 0.46, 0.51, 0.63, 0.74, 0.87, 0.99)
+(Xa <- matrix(c(qlnorm(U, 1.9, 1), qlnorm(1 - U, 2.0, 0.9)), nrow =10, ncol = 2))
+(Sa <- rowSums(Xa))
+
+(Xb <- matrix(c(qlnorm(U, 1.9, 1), qlnorm(U, 2.0, 0.9)), nrow =10, ncol = 2))
+(Sb <- rowSums(Xb))
+```
+
+### ii)
+
+```{r}
+sum(sort(Sa) <= 15) / length(Sa)
+sum(sort(Sb) <= 15) / length(Sb)
+```
+
+### iii)
+```{r}
+sum(Sa[Sa > 20] - 20) / length(Sa)
+sum(Sb[Sb > 20] - 20) / length(Sb)
+```
+
