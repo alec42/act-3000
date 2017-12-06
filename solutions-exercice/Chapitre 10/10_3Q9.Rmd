@@ -1,0 +1,109 @@
+---
+title: "10_3Q9"
+author: "David Beauchemin"
+date: "6 décembre 2017"
+output: pdf_document
+---
+
+# 10_3Q9 (similaire à 10_1_2Q1)
+
+## A)
+$$
+\begin{aligned}
+F_{U_1}(u_1) &= F_{U_1, U_2}(u_1, 1) \\
+&= \frac{1}{2} \text{max}(u_1 + 1 - 1; 0) + \frac{1}{2} \text{min}(u_1 ; 1) \\
+&= \frac{1}{2} u_1 + \frac{1}{2} u_1 \\
+&= u_1
+\end{aligned}
+$$
+
+$$
+u_i \sim \text{Unif}(0, 1)
+$$
+
+## B)
+```{r, echo = FALSE}
+alpha <- 0.5
+matplot(seq(0, 1, 0.01), cbind(1, seq(0, 1, 0.01), seq(1, 0, -0.01)), pch=1)
+matplot(rep(1, length(seq(0, 1, 0.01))), seq(0, 1, 0.01), pch = 1, add =TRUE)
+```
+
+## C)
+$$
+\begin{aligned}
+E[U_1U_2] &= \frac{1}{2} \int_0^1u(1 - u)du + \frac{1}{2} \int_0^1u^2du \\
+&= \frac{1}{2} \int_0^1 udu  - \frac{1}{2} \int_0^1 u^2 du + \frac{1}{2} \int_0^1u^2du \\
+&= \frac{1}{2} \int_0^1 udu  \\
+&= \frac{1}{2} \frac{u^2}{2}\bigg|_0^1  \\
+&= \frac{1}{4}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+E[U_i] &= \frac{1}{2} 
+\end{aligned}
+$$
+Alors,
+
+$$
+\begin{aligned}
+cov(U_1U_2) &= \frac{1}{4} - \Big(\frac{1}{2} \Big)^2 \\
+&= 0
+\end{aligned}
+$$
+
+## D)
+$$
+\begin{aligned}
+F_S(x) &= P(U_1 + U_2 \leq x) \\
+&= \underset{antimonotone}{\underbrace{\frac{1}{2} P\big(U + (1 - U)\leq x\big)}}  + \underset{monotone}{\underbrace{\frac{1}{2} P\big(U + U \leq x\big)}}\\
+&= \frac{1}{2} P\big(1\leq x\big)  + \frac{1}{2} P\big(2U \leq x\big)\\
+&= \frac{1}{2} 1_{x \geq 1} + \frac{1}{2} F_U\Big(\frac{x}{2}\Big),\  0 \leq x \leq 2\\
+\end{aligned}
+$$
+
+## E)
+$$
+\begin{aligned}
+E[X_1X_2] &= \frac{1}{2} E[F_{X_1}^{-1}(U_1)F_{X_2}^{-1}(U_2)] + \frac{1}{2}E[F_{X_1}^{-1}(U_1)F_{X_2}^{-1}(1 - U_1)]\\
+&= \frac{1}{2} E[X^2] - \frac{1}{2}E[F_{X_1}^{-1}(U_1)F_{X_2}^{-1}(U_1)] \\
+&= \frac{1}{2} E[X^2] - \frac{1}{2}E[X^2] \\
+&= 0 \\
+\end{aligned}
+$$
+Avec,
+$$
+\begin{aligned}
+E[X_1] &= 0 \\
+E[X_2] &= 0 \\
+\end{aligned}
+$$
+La covariance est donc,
+$$
+\begin{aligned}
+cov(X_1, X_2) &= E[X_1X_2] - E[X_1]E[X_2] \\
+&= 0 - 0 \times 0\\
+&= 0
+\end{aligned}
+$$
+
+## F)
+$$
+\begin{aligned}
+F_S(x) &= P(X_1 + X_2 \leq x) \\
+&= \underset{antimonotone}{\underbrace{\frac{1}{2} P\big(X  - X\leq x\big)}}  + \underset{monotone}{\underbrace{\frac{1}{2} P\big(X + X \leq x\big)}}\\
+&= \frac{1}{2} P\big(0\leq x\big)  + \frac{1}{2} P\big(2X \leq x\big)\\
+&= \frac{1}{2} 1_{x \geq 0} + \frac{1}{2} \Phi\Big(\frac{x}{2}\Big) \\
+\end{aligned}
+$$
+
+```{r}
+distributionFunction <- function(x){
+     0.5 * (x >= 0) + 0.5 * pnorm(x / 2)
+}
+```
+```{r}
+distributionFunction(-1)
+distributionFunction(1)
+```
+

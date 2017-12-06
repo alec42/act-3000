@@ -1,0 +1,103 @@
+---
+title: "10_3Q6"
+author: "David Beauchemin"
+date: "6 décembre 2017"
+output: pdf_document
+---
+
+# 10_3Q6
+
+## A)
+Il s'agit de la copule bivariée de Fréchet avec une combinaison de $v.a.$ monotone et antimonotone.
+
+## B)
+$$
+\begin{aligned}
+F_{S}(x) &= \alpha P\big(\Phi^{-1}(U_1) + \Phi^{-1}(U_2) < x\big) + (1 - \alpha) P\big(\Phi^{-1}(U_1) + \Phi^{-1}(1 - U_1) < x\big)\\
+&= \alpha P\big(2\Phi^{-1}(U_1)< x\big) + (1 - \alpha) P\big(\Phi^{-1}(U_1) - \Phi^{-1}(U_1) < x\big)\\
+&= \alpha P\bigg(\Phi^{-1}(U_1)< \frac{x}{2}\bigg) + (1 - \alpha) P\big(0 < x\big)\\
+&= \alpha P\bigg(U_1< \Phi\Big(\frac{x}{2}\Big)\bigg) + (1 - \alpha) 1_{{x > 0}}\\
+&= \alpha \Phi\Big(\frac{x}{2}\Big) + (1 - \alpha) 1_{\{x > 0\}}\\
+\end{aligned}
+$$
+$$
+F_S(x) = 
+\begin{cases}
+    \alpha \Phi\Big(\frac{x}{2}\Big)    &, x < 0\\
+    (1 - \alpha) + \alpha \Phi\Big(\frac{x}{2}\Big)    &, x \geq 0 \\
+\end{cases}
+$$
+
+## C)
+
+$$
+\begin{aligned}
+E[X_1] &= 0 \\
+E[X_2] &= 0 \\
+\end{aligned}
+$$
+
+On rappel que $X_i \sim Norm(0, 1)$. Il faut alors que $E[X_1X_2] = 0$, soit
+$$
+\begin{aligned}
+E[X_1X_2] &= \alpha E[F_{X_1}^{-1}(U_1)F_{X_2}^{-1}(U_2)] + (1 - \alpha)E[F_{X_1}^{-1}(U_1)F_{X_2}^{-1}(1 - U_1)]\\
+&= \alpha E[X^2] - (1 - \alpha)E[F_{X_1}^{-1}(U_1)F_{X_2}^{-1}(U_1)] \\
+&= \alpha E[X^2] - (1 - \alpha)E[X^2] \\
+\end{aligned}
+$$
+$$
+\begin{aligned}
+0 &= \alpha E[X^2] - (1 - \alpha)E[X^2] \\
+\end{aligned}
+$$
+On résout pour trouver $\alpha = 0.5$ qui satisfait l'équation.
+
+## D)
+### i)
+```{r, echo = FALSE}
+densitycopula <- function(u1, u2, alpha){
+     alpha * min(u1, u2) + (1 - alpha) * max(u1 + u2 - 1, 0)
+}
+FSDensity <- function(x, alpha){
+     ifelse(x < 0, alpha * pnorm(x / 2), (1 - alpha) + alpha * pnorm(x / 2))
+}
+simul <- 1000
+U <- matrix(c(runif(simul), runif(simul)), nrow = simul, ncol = 2)
+```
+
+```{r}
+plot(U[, 1], U[, 2])
+```
+
+### ii)
+```{r}
+plot(FSDensity(seq(-5, 10, by = 0.2), alpha =  0.5))
+```
+
+### iii)
+$$
+\begin{aligned}
+VaR_{0.01}(S) &= 2 * \Phi^{-1}\Big(\frac{\kappa}{\alpha}\Big)
+\end{aligned}
+$$
+
+```{r}
+alpha <- 0.5
+2 * qnorm(0.01 / alpha)
+
+## Vérification
+FSDensity(-4.107498, alpha)
+```
+
+$$
+\begin{aligned}
+VaR_{0.01}(S) &= 2 * \Phi^{-1}\Bigg(\frac{\kappa - (1 - \alpha)}{\alpha}\Bigg)
+\end{aligned}
+$$
+
+```{r}
+2 * qnorm((0.99 - (1 - alpha)) / alpha)
+
+## Vérification
+FSDensity(4.107498, 0.5)
+```
