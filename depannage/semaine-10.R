@@ -84,6 +84,7 @@ panjer.nbinom1<-function(rr, qq, ff, smax)
   return(ffs)
 }
 
+
 fx <- panjer.nbinom1(1.5, 1 / 3, fb, 600)
 fx[c(1, 21)]  # Reponse
 fx[16]  # Verification
