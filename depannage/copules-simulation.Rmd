@@ -219,7 +219,7 @@ plot(vU, xlab = expression(U[1]), ylab = expression(U[2]))
 
 ### Fonction de répartition
 ```{r}
-C <- function(u1, u2, alph) exp(-((-log(u1) ** alph) + (-log(u2)) ** alph) ** (1 / alph))
+C <- function(u1, u2, alph) exp(-(((-log(u1)) ** alph) + (-log(u2)) ** alph) ** (1 / alph))
 ```
 
 ***
