@@ -1,0 +1,63 @@
+---
+title: "10_3Q4"
+author: "David Beauchemin"
+date: "5 décembre 2017"
+output: pdf_document
+---
+
+# 10_3Q4
+
+## A)
+```{r}
+distributionFunction <- function(x, mu, sigma){
+     0.5 * (1 + ( ((x - mu) / sigma) / sqrt(2 + ((x - mu) / sigma)^2) ))
+}
+copulaDensity <- function(u, alpha){
+     exp(-sum( (-log(u))^alpha )^(1/alpha))
+}
+(R1 <- distributionFunction(-0.1, 0.06, 0.2))
+(R2 <- distributionFunction(-0.1, 0.05, 0.15))
+copulaDensity(c(R1, R2), alpha = 4)
+```
+
+## B)
+```{r}
+distributionFunction(-0.1, 0.06, 0.2) + distributionFunction(-0.1, 0.05, 0.15) - copulaDensity(c(R1, R2), alpha = 4)
+```
+
+## C)
+```{r, echo = FALSE}
+q <- distributionFunction(-0.1, 0.06, 0.2) + distributionFunction(-0.1, 0.05, 0.15) - copulaDensity(c(R1, R2), alpha = 4)
+```
+
+Soit la loi Bernouilli suivante,
+$$
+(1 - q) + qF_B(x)
+$$
+Où $q = `r q `$ et $B \sim \text{Weibull}(0.5, \frac{1}{1000})$
+
+## D)
+$$
+\begin{aligned}
+F_X(0) &= (1 - q) + q \times F_B(0) \\
+&= `r (1 - q) + q * pweibull(0, 0.5, 1000)` \\
+F_x(10000) &= (1 - q) + q \times F_B(10000) \\
+&= `r (1 - q) + q * pweibull(10000, 0.5, 1000)` \\
+\end{aligned}
+$$
+
+## E)
+
+### $\kappa = 0.5$
+On cherche la *VaR* pour $\kappa$ = 0.5. Étant donner que $\kappa < (1 - q)$, la *VaR* = 0.
+
+### $\kappa = 0.995$
+Soit, 
+$$
+\begin{aligned}
+0.995 &= (1 - q) + q \times F_B(x) \\
+`r (0.995 - (1 - q)) / q ` &= F_B(x) \\
+VaR_{`r (0.995 - (1 - q)) / q `}(X) &= \frac{1}{\frac{1}{1000}} (- \ln(1 - \kappa))^{\frac{1}{0.5}} \\
+&= `r options(scipen = 999) ; 1 / (1 / 1000) * (- log(1 - (0.995 - (1 - q)) / q))^(1 / 0.5)`
+\end{aligned}
+$$

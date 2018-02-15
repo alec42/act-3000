@@ -1,0 +1,125 @@
+---
+title: "10_2Q6"
+author: "David Beauchemin"
+date: "30 novembre 2017"
+output: pdf_document
+---
+
+# 10_2Q6
+
+```{r}
+#Vecteur des Yi
+Yi <- matrix(c(-0.45, 0.76, 2.67, 1.31,3.93,-2.18), nrow = 3 , ncol = 2, byrow = TRUE)
+
+# Pareto
+qpareto <- function(kappa, lambda, alpha){
+     lambda * ((1 - kappa)^(-1 / alpha) - 1)
+}
+```
+
+Il faut d'abord créé des valeurs d'un couple de loi normale bivariées $(Z_1, Z_2)$, soit
+$$
+\begin{aligned}
+Y_1 &= Z_1 & Y_2 &=  \alpha Z_1 + \sqrt{1 - \alpha^2} * Z_2
+\end{aligned}
+$$
+On rappel que dans notre cas $\alpha$ correspond au coefficiet de corrélation de Person. (Voir page 327 du document de référence)
+
+```{r}
+alpha <- 0.6
+Zi <- matrix(c(Yi[,1], alpha * Yi[,1] + sqrt(1 - alpha^2) *  Yi[,2]), nrow = 3)
+Zi
+```
+
+## A)
+
+### i)
+
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(U_1) \leq x_1, F_{X_2}^{-1}(U_2) \leq x_2\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), U_2 \leq F_{X_2}(x_2)\big) \\
+&= C_\alpha^N\big( F_{X_1}(x_1),  F_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+### ii)
+```{r}
+#Simulation des U 
+U_i <- pnorm(Zi, 0, 1)
+#valeurs de X_1 et X_2
+matrix(c(qexp(U_i[ ,1], 1 / 100), qpareto(U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
+```
+
+## B)
+
+### i)
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(U_1) \leq x_1, F_{X_2}^{-1}(1 - U_2) \leq x_2\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), 1 - U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), U_2 > 1 - F_{X_2}(x_2)\big) \\
+&= P\big(U_1 \leq F_{X_1}(x_1), U_2 > \overline{F}_{X_2}(x_2)\big) \\
+&= 1 - \overline{F}_{X_2}(x_2) - C_\alpha^N\big( F_{X_1}(x_1),  \overline{F}_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+### ii)
+
+```{r}
+#Simulation des U 
+U_i <- pnorm(Zi, 0, 1)
+#valeurs de X_1 et X_2
+matrix(c(qexp(U_i[ ,1], 1 / 100), qpareto(1 - U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
+```
+
+
+## C)
+
+### i)
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(1 - U_1) \leq x_1, F_{X_2}^{-1}(U_2) \leq x_2\big) \\
+&= P\big(1 - U_1 \leq F_{X_1}(x_1), U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > 1 - F_{X_1}(x_1), U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > \overline{F}_{X_1}(x_1), U_2 \leq F_{X_2}(x_2)\big) \\
+&= 1 - \overline{F}_{X_1}(x_1) - C_\alpha^N\big( F_{X_1}(x_1),  F_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+### ii)
+
+```{r}
+#Simulation des U 
+U_i <- pnorm(Zi, 0, 1)
+#valeurs de X_1 et X_2
+matrix(c(qexp(1 - U_i[ ,1], 1 / 100), qpareto(U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
+```
+
+## D)
+
+### i)
+$$
+\begin{aligned}
+F_{X_1, X_2}(X_1, X_2) &=P\big(X_1 \leq x_1, X_2 \leq x_2\big) \\
+&= P\big(F_{X_1}^{-1}(1 - U_1) \leq x_1, F_{X_2}^{-1}(1 - U_2) \leq x_2\big) \\
+&= P\big(1 - U_1 \leq F_{X_1}(x_1), 1 - U_2 \leq F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > 1 - F_{X_1}(x_1), U_2 > 1 - F_{X_2}(x_2)\big) \\
+&= P\big(U_1 > \overline{F}_{X_1}(x_1), U_2 > \overline{F}_{X_2}(x_2)\big) \\
+&= 1 - \overline{F}_{X_1}(x_1) - \overline{F}_{X_2}(x_2) + C_\alpha^N\big( \overline{F}_{X_1}(x_1),  \overline{F}_{X_2}(x_2)\big)
+\end{aligned}
+$$
+
+### ii)
+
+```{r}
+#Simulation des U 
+U_i <- pnorm(Zi, 0, 1)
+#valeurs de X_1 et X_2
+matrix(c(qexp(1 - U_i[ ,1], 1 / 100), qpareto(1 - U_i[ ,2], 150, 2.5)), nrow = 3, ncol = 2)
+```
+
+

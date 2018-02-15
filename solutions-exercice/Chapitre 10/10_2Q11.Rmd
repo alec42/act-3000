@@ -1,0 +1,43 @@
+---
+title: "10_2Q11"
+author: "David Beauchemin"
+date: "30 novembre 2017"
+output: pdf_document
+---
+
+# 10_2Q11
+
+## A)
+$$
+\begin{aligned}
+C_{\alpha_1}(u_1, u_2) &\leq C_{\alpha_2}(u_1, u_2) \\
+\frac{u_1u_2}{1 - \alpha_1(1-u_1)(1 - u_2)} &\leq \frac{u_1u_2}{1 - \alpha_2(1-u_1)(1 - u_2)} \\
+\frac{1}{1 - \alpha_1(1-u_1)(1 - u_2)} &\leq \frac{1}{1 - \alpha_2(1-u_1)(1 - u_2)} \\
+1 - \alpha_1(1-u_1)(1 - u_2) &\geq 1 - \alpha_2(1-u_1)(1 - u_2) \\
+\alpha_1(1-u_1)(1 - u_2) &\leq \alpha_2(1-u_1)(1 - u_2) \\
+\alpha_1 &\leq \alpha_2 \\
+\end{aligned}
+$$
+
+## B)
+```{r}
+q <- 1 / 10 #Pas dans énoncé
+u <- 0.91 #Énoncé
+Theta <- ceiling(log( 1 - u) / log(1 - q)) #discret
+
+# vérification
+1 - (1 - q)^Theta
+
+V <- c(0.76, 0.83) #Énoncé
+W <-  sapply(1:2, function(i) - 1 / Theta * log(1 - V[i]))
+
+alpha <- 0.8
+U <- sapply(1:2, function(i) (1 - alpha) / (exp(W[i] - alpha)))
+```
+
+## C)
+```{r}
+qexp(U[1], 1 / 10); qlnorm(U[2], 2, 0.9)
+```
+
+

@@ -1,0 +1,102 @@
+---
+title: "10_4Q2"
+author: "David Beauchemin"
+date: "6 décembre 2017"
+output: pdf_document
+---
+
+# 10_4Q2
+## A)
+```{r}
+## GNPA
+rand <- function(n, a, m, seed)
+{
+     x <- numeric(n + 1)
+     x[1] <- seed
+     for (i in seq(n))
+          x[i + 1] <- (a * x[i]) %% m
+     x[-1]/m
+}
+
+## Arguments GNPA
+a <- 41358
+m <- 2147483647
+seed <- 20111221
+
+## Nombre simulation
+simul <- 1000
+
+## Simulation unif
+V <- matrix(rand(simul * 2, a, m, seed), nrow = simul, ncol =2, byrow = TRUE)
+V[c(1, 2, 3, 1000), c(1,2)]
+
+## Param de dépendance
+alpha.dep <- 5
+
+## Simulation U
+U <- cbind(V[ ,1], ((V[ ,2] * V[ ,1]^(alpha.dep + 1))^(- alpha.dep / (alpha.dep + 1)) - 
+                         V[ ,1]^(-alpha.dep) + 1)^(-1 / alpha.dep) )
+U[c(1, 2, 3, 1000), c(1,2)]
+```
+
+## B)
+
+$$
+\begin{aligned}
+e^{\mu + \frac{\sigma^2}{2}} &= 300 \\
+\mu + \frac{1^2}{2} &= \ln(300) \\
+\mu  &= \ln(300) - \frac{1}{2}\\
+\mu &= `r log(300) - 0.5 `
+\end{aligned}
+$$
+
+```{r}
+## Param
+mu <- log(300) - 0.5 
+sigma <- 1
+alpha <- 3
+beta <-  1 /100
+
+## Simulation X
+distributionCopula <- function(u1, u2, alpha){
+    (u1^(-alpha) + u2^(-alpha) - 1)^(-1 / alpha)
+}
+
+X <- cbind(qlnorm(U[ ,1], mu, sigma), qgamma(U[ ,2], alpha, beta))
+X[c(1, 2, 3, 1000), c(1,2)]
+```
+
+## C)
+```{r}
+S <- rowSums(X)
+S[c(1, 2, 3, 1000)]
+```
+
+## D)
+
+### i)
+```{r}
+sum(sort(S) <= 1000) / length(S)
+```
+
+### ii)
+```{r}
+kappa <- 0.95
+j0 <- simul * kappa
+
+## VarS
+(VaRS <- sort(S)[j0])
+
+## TVaRS
+(TVaRS <- mean(S[S > VaRS]))
+```
+
+### iii)
+```{r}
+## TVaRX1
+(TVaRX1 <- mean(X[S > VaRS, 1]))
+
+## TVaRX2
+(TVaRX2 <- mean(X[S > VaRS, 2]))
+```
+
